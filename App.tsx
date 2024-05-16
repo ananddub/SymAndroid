@@ -11,12 +11,23 @@ import IDCard from './Admin/IDCard';
 import Dues from './Admin/Dues';
 import StdReg from './Admin/StdReg';
 import IDCardSummary from './Admin/IDCardSummar';
+import PIDCard from './Admin/PIDCard';
 
 const stack = createNativeStackNavigator();
 function App() {
   return (
     <NavigationContainer>
       <stack.Navigator>
+        <stack.Screen
+          name="ALogin"
+          component={ALogin}
+          options={{
+            headerShown: false,
+            headerStyle: {
+              backgroundColor: 'white',
+            },
+          }}
+        />
         <stack.Screen
           name="Sealecting"
           component={Searching}
@@ -36,21 +47,21 @@ function App() {
         />
 
         <stack.Screen
-          name="ALogin"
-          component={ALogin}
+          name="idCardsummary"
+          component={IDCardSummary}
           options={{
-            headerShown: false,
+            title: 'Photography Summary',
+            headerShown: true,
             headerStyle: {
               backgroundColor: 'white',
             },
           }}
         />
         <stack.Screen
-          name="idCardsummary"
-          component={IDCardSummary}
+          name="EID Card"
+          component={PIDCard}
           options={{
-            title: 'Photography Summary',
-            headerShown: true,
+            headerShown: false,
             headerStyle: {
               backgroundColor: 'white',
             },

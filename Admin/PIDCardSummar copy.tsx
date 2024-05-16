@@ -11,7 +11,7 @@ import {
 import {url} from './GlobalVariable';
 import {RefreshControl} from 'react-native-gesture-handler';
 
-function IDCardSummary() {
+function PIDCardSummary() {
   const [list, setList] = useState<any[]>([]);
   const [spin, setSpin] = useState<boolean>(true);
   const [mdetail, setMdetail] = useState({

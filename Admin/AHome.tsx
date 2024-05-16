@@ -123,115 +123,143 @@ function AHome() {
             }}>
             <View
               style={{
-                width: '100%',
-                height: 150,
                 backgroundColor: '#F1F5F9',
-                flexDirection: 'row',
-                borderRadius: 20,
-                paddingHorizontal: 5,
-                justifyContent: 'space-around',
-                alignItems: 'center',
-              }}>
-              <TouchableOpacity
-                onPress={() => {
-                  setPhotography(false);
-                  navigator.navigate('ID Card');
-                }}
-                style={styles.box}>
-                <Image
-                  source={require('../assets/idcard.png')}
-                  style={{
-                    width: 70,
-                    height: 70,
-                    top: -10,
-                  }}
-                />
-                <Text style={styles.text}>ID Card</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => {
-                  setPhotography(false);
-                  navigator.navigate('idCardsummary');
-                }}
-                style={{
-                  width: '30%',
-                  maxWidth: 150,
-                  height: 100,
-                  backgroundColor: 'white',
-                  borderRadius: 10,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderColor: '#F1F5F9',
-                  elevation: 6,
-                  shadowColor: '#94A3B8',
-                }}>
-                <Image
-                  source={require('../assets/summary.png')}
-                  style={{
-                    width: 65,
-                    height: 65,
-                    top: -10,
-                  }}
-                />
-                <Text style={styles.text}>Summary</Text>
-              </TouchableOpacity>
-            </View>
-            <View
-              style={{
+                borderRadius: 10,
+                paddingHorizontal: 10,
+                paddingVertical: 10,
                 width: '100%',
-                height: 150,
-                backgroundColor: '#F1F5F9',
-                flexDirection: 'row',
-                borderRadius: 20,
-                paddingHorizontal: 5,
-                justifyContent: 'space-around',
-                alignItems: 'center',
               }}>
-              <TouchableOpacity
-                onPress={() => {
-                  setPhotography(false);
-                  navigator.navigate('ID Card');
-                }}
-                style={styles.box}>
-                <Image
-                  source={require('../assets/idcard.png')}
-                  style={{
-                    width: 70,
-                    height: 70,
-                    top: -10,
-                  }}
-                />
-                <Text style={styles.text}>ID Card</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => {
-                  setPhotography(false);
-                  navigator.navigate('idCardsummary');
-                }}
+              <Text
                 style={{
-                  width: '30%',
-                  maxWidth: 150,
-                  height: 100,
-                  backgroundColor: 'white',
-                  borderRadius: 10,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderColor: '#F1F5F9',
-                  elevation: 6,
-                  shadowColor: '#94A3B8',
+                  color: 'gray',
+                  fontWeight: '500',
+                  textAlign: 'center',
+                  fontSize: 18,
                 }}>
-                <Image
-                  source={require('../assets/summary.png')}
-                  style={{
-                    width: 65,
-                    height: 65,
-                    top: -10,
+                Student
+              </Text>
+              <View
+                style={{
+                  height: 150,
+                  backgroundColor: '#F1F5F9',
+                  flexDirection: 'row',
+                  borderTopEndRadius: 10,
+                  borderTopStartRadius: 10,
+                  paddingHorizontal: 5,
+                  justifyContent: 'space-around',
+                  alignItems: 'center',
+                }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setPhotography(false);
+                    navigator.navigate('ID Card');
                   }}
-                />
-                <Text style={styles.text}>Summary</Text>
-              </TouchableOpacity>
+                  style={styles.box}>
+                  <Image
+                    source={require('../assets/idcard.png')}
+                    style={{
+                      width: 70,
+                      height: 70,
+                      top: -10,
+                    }}
+                  />
+                  <Text style={styles.text}>ID Card</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setPhotography(false);
+                    navigator.navigate('idCardsummary');
+                  }}
+                  style={{
+                    width: '30%',
+                    maxWidth: 150,
+                    height: 100,
+                    backgroundColor: 'white',
+                    borderRadius: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderColor: '#F1F5F9',
+                    elevation: 6,
+                    shadowColor: '#94A3B8',
+                  }}>
+                  <Image
+                    source={require('../assets/summary.png')}
+                    style={{
+                      width: 65,
+                      height: 65,
+                      top: -10,
+                    }}
+                  />
+                  <Text style={styles.text}>Summary</Text>
+                </TouchableOpacity>
+              </View>
+
+              <Text
+                style={{
+                  color: 'gray',
+                  fontWeight: '500',
+                  textAlign: 'center',
+                  fontSize: 18,
+                }}>
+                Teacher
+              </Text>
+              <View
+                style={{
+                  height: 150,
+                  backgroundColor: '#F1F5F9',
+                  borderBottomEndRadius: 10,
+                  borderBottomStartRadius: 10,
+                  flexDirection: 'row',
+                  paddingHorizontal: 5,
+                  justifyContent: 'space-around',
+                  alignItems: 'center',
+                }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setPhotography(false);
+                    navigator.navigate('EID Card');
+                  }}
+                  style={styles.box}>
+                  <Image
+                    source={require('../assets/idcard.png')}
+                    style={{
+                      width: 70,
+                      height: 70,
+                      top: -10,
+                    }}
+                  />
+                  <Text style={styles.text}>ID Card</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setPhotography(false);
+                    // navigator.navigate('idCardsummary');
+                  }}
+                  style={{
+                    width: '30%',
+                    maxWidth: 150,
+                    height: 100,
+                    backgroundColor: 'white',
+                    borderRadius: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderColor: '#F1F5F9',
+                    elevation: 6,
+                    shadowColor: '#94A3B8',
+                  }}>
+                  <Image
+                    source={require('../assets/summary.png')}
+                    style={{
+                      width: 65,
+                      height: 65,
+                      top: -10,
+                    }}
+                  />
+                  <Text style={styles.text}>Summary</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </Modal>

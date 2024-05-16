@@ -137,7 +137,12 @@ export default function Searching() {
       });
     };
   }, []);
-
+  useEffect(() => {
+    if (succes) {
+      setTextmsg('');
+      setFileResponse([]);
+    }
+  }, [succes]);
   const onSubmit = () => {
     let date: string = `${new Date()}`;
     date = date.replaceAll(' ', '_');
