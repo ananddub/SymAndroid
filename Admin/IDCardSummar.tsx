@@ -63,7 +63,6 @@ function IDCardSummary() {
   useEffect(() => {
     console.log('rerender occured due to list change');
   }, [list]);
-  const {width, height} = useWindowDimensions();
   return (
     <View style={{backgroundColor: 'white', height: '100%'}}>
       <View

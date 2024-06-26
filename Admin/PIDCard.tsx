@@ -90,7 +90,7 @@ export default function PIDCard() {
   const [list, setList] = useState<[]>([]);
   const [title, setTitle] = useState<string>('');
   const [emsgVisible, setEmsgVisible] = useState<boolean>(false);
-  const [spin, setSpin] = useState<boolean>(false);
+  const [spin, setSpin] = useState<boolean>(true);
   const [errmsg, setErrmsg] = useState<string>('');
   const [update, setUpdate] = useState<boolean>(false);
   const navigation = useNavigation();
@@ -222,6 +222,7 @@ export default function PIDCard() {
   useEffect(() => {
     const socket = io(url);
     console.log('conecting to socket');
+    setSpin(true);
     console.log(socket);
     socket.on('connect', () => {
       socket.emit('getEmpImage');
@@ -355,7 +356,6 @@ export default function PIDCard() {
           onChangeText={e => setText(e.trim())}
           value={text}
           cursorColor={'gray'}
-          keyboardType="numeric"
           placeholderTextColor={'gray'}
           placeholder="Search by Name or Phone"
         />

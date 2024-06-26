@@ -15,6 +15,7 @@ import {
   Button,
   PermissionsAndroid,
   ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
 import DropDown from './AComponent/DropwDown';
 import {CameraIcon, GalleryIcon} from '../assets/SVG';
@@ -42,6 +43,7 @@ import {Circle} from 'react-native-animated-spinkit';
 // import RNFS from "react-native-fs";0
 import RNFS from 'react-native-fs';
 import {url} from './GlobalVariable';
+import axios from 'axios';
 
 // const socket = io('https://reactnativebackendnew.onrender.com');
 // const url = 'http://192.168.1.6:4000';
@@ -84,6 +86,21 @@ const idcreate = (item: any) => {
 };
 export default function IDCard() {
   const {width, height} = useWindowDimensions();
+  const [lcheck, setLcheck] = useState<Array<boolean>>(new Array(0));
+  const [mcheck, setMcheck] = useState<boolean>(true);
+  const [succes, setSucces] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>('');
+  const [emsgVisible, setEmsgVisible] = useState<boolean>(false);
+  const [errmsg, setErrmsg] = useState<string>('');
+  const [update, setUpdate] = useState<boolean>(false);
+  const navigation = useNavigation();
+  const [trecord, setTrecord] = useState<number>(0);
+  const [mainlist, setMainlist] = useState<any[]>([]);
+  const [list, setList] = useState<[]>([]);
+  const [mlist, setMList] = useState<[]>([]);
+  const [reload, setReload] = useState(false);
+  const [spin, setSpin] = useState<boolean>(false);
+  const [ptotal, setPtotal] = useState<number>(0);
   const classarr = [
     'NUR',
     'LKG',
@@ -105,19 +122,68 @@ export default function IDCard() {
   const [classindex, setClassIndex] = useState<number>(-1);
   const [secindex, setSecIndex] = useState<number>(0);
   const [text, setText] = useState<string>('');
-  const [list, setList] = useState<any[]>([]);
-  const [lcheck, setLcheck] = useState<Array<boolean>>(new Array(0));
-  const [mcheck, setMcheck] = useState<boolean>(true);
-  const [succes, setSucces] = useState<boolean>(false);
-  const [title, setTitle] = useState<string>('');
-  const [emsgVisible, setEmsgVisible] = useState<boolean>(false);
-  const [spin, setSpin] = useState<boolean>(false);
-  const [errmsg, setErrmsg] = useState<string>('');
-  const [update, setUpdate] = useState<boolean>(false);
-  const navigation = useNavigation();
-  const [trecord, setTrecord] = useState<number>(0);
-  const [ptotal, setPtotal] = useState<number>(0);
-  const [mainlist, setMainlist] = useState<any[]>([]);
+  const [checkbox, setCheckbox] = useState<boolean>(false);
+  useEffect(() => {
+    // console.log("color", stdPhoto);
+    let i = 0;
+    setList([]);
+    setMList([]);
+    if (classindex > -1 && checkbox === false) {
+      setSpin(true);
+      axios
+        .get(`${url}/getStdImage?class=${classarr[classindex]}`)
+        .then(async (response: any) => {
+          const data = `[${response.data}]`;
+          const data1 = JSON.parse(data);
+          console.log(data1[0].name);
+          setSpin(false);
+          setMList(data1);
+          console.log(i);
+        })
+        .catch(error => console.log(error));
+    } else if (checkbox) {
+      setList([]);
+      setMList([]);
+      setSpin(true);
+      fetch(`${url}/getstdnotuploaded`)
+        .then(async (data1: any) => {
+          data1 = await data1.json();
+          data1 = data1.map((item: any) => {
+            item.imagepath = '';
+            return item;
+          });
+          console.log(data1);
+          setSpin(false);
+          setLcheck(data1);
+          setMList(data1);
+          console.log(i);
+        })
+        .catch(error => console.log(error));
+    }
+  }, [reload, classindex, checkbox]);
+  useEffect(() => {
+    if (classindex > -1) {
+      const arr: any = mlist.filter((item: any) => {
+        if (text !== '' && text) {
+          if (secarr[secindex] === 'ALL' && text === `${item.roll}`)
+            return true;
+          return secarr[secindex] === item.section && text === `${item.roll}`;
+        }
+        console.log(
+          item.section === secarr[secindex] || secarr[secindex] === 'ALL',
+        );
+        return (
+          (item.section === secarr[secindex] &&
+            item.class === classarr[classindex]) ||
+          (secarr[secindex] === 'ALL' && item.class === classarr[classindex])
+        );
+      });
+      console.log(arr);
+      setList(arr);
+    } else if (classindex == -1 && checkbox) {
+      setList(mlist);
+    }
+  }, [secindex, classindex, mlist, text]);
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', (): boolean => {
       navigation.navigate('AHome');
@@ -248,34 +314,6 @@ export default function IDCard() {
   };
 
   useEffect(() => {
-    const socket = io(url);
-    console.log('conecting to socket');
-    console.log(socket);
-    socket.on('connect', () => {
-      console.log('connected');
-    });
-    socket.on('getImage', (data: any) => {
-      console.log('recived data from getImage');
-      setSpin(false);
-      setMainlist(data);
-      setList(data);
-    });
-    if (classindex > -1) {
-      setSpin(true);
-      socket.emit('getImage', {
-        class: classarr[classindex],
-      });
-      setList([]);
-      setMainlist([]);
-      console.log('rerender ', classindex);
-      return () => {
-        socket.disconnect();
-        console.log('rerender ', classindex);
-      };
-    }
-  }, [classindex, update]);
-
-  useEffect(() => {
     const len = list.reduce((a, b) => {
       if (b.imagepath !== '') return a + 1;
       else return a;
@@ -284,25 +322,6 @@ export default function IDCard() {
     console.log('photography done :', len);
   }, [list, classarr, secindex, text]);
 
-  useEffect(() => {
-    console.log('secindex', secindex);
-    if (secindex === 0) {
-      setList(mainlist);
-    } else if (secindex > 0 && text === '') {
-      const sec = secarr[secindex];
-      const arr = mainlist.filter((x: any) => x.section === sec);
-      console.log('arr ', arr);
-      setList(arr);
-    }
-    if (text !== '') {
-      const sec = secarr[secindex];
-      const arr = mainlist.filter(
-        (x: any) =>
-          (x.section === sec || secindex === 0) && text.trim() === `${x.roll}`,
-      );
-      setList(arr);
-    }
-  }, [secindex, mainlist, text]);
   const uploadData = (image: any, admno: string) => {
     const form = new FormData();
     const obj = image;
@@ -356,7 +375,7 @@ export default function IDCard() {
     <View
       style={{
         width: width,
-        height: height,
+        height: '100%',
         backgroundColor: 'white',
       }}>
       <Modals
@@ -527,6 +546,40 @@ export default function IDCard() {
           placeholderTextColor={'gray'}
           placeholder="Enter Roll"
         />
+      </View>
+      <View
+        style={{
+          paddingLeft: 15,
+          flexDirection: 'row',
+        }}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{
+              color: 'red',
+              fontWeight: '500',
+              fontSize: 15,
+              paddingRight: 15,
+            }}>
+            Image missing
+          </Text>
+          <BouncyCheckbox
+            size={20}
+            fillColor="#ff2802"
+            unFillColor="#FFFFFF"
+            isChecked={checkbox}
+            iconStyle={{borderColor: 'red'}}
+            innerIconStyle={{borderWidth: 2}}
+            textStyle={{fontFamily: 'JosefinSans-Regular'}}
+            onPress={(isChecked: boolean) => {
+              setCheckbox(isChecked);
+            }}
+          />
+        </View>
       </View>
       <View
         style={{
@@ -811,3 +864,76 @@ export default function IDCard() {
     </View>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    width: 300,
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#0057D9', // Dark blue color for heading
+  },
+  modalDescription: {
+    marginBottom: 20,
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#666',
+  },
+  input: {
+    width: '100%',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    marginBottom: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    width: '45%',
+    alignItems: 'center',
+  },
+  buttonContinue: {
+    backgroundColor: '#0057D9', // Dark blue color for continue button
+  },
+  buttonCancel: {
+    backgroundColor: '#ddd',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+});

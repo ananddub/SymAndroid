@@ -1,7 +1,11 @@
-import {View, Text, Dimensions, Modal} from 'react-native';
+import {View, Text, TextInput, Dimensions, Modal} from 'react-native';
 import {TouchableOpacity, StyleSheet} from 'react-native';
 import {ScrollView, Image} from 'react-native';
-import {CommonActions, useNavigation} from '@react-navigation/native';
+import {
+  CommonActions,
+  NavigationRouteContext,
+  useNavigation,
+} from '@react-navigation/native';
 import {Circle} from 'react-native-animated-spinkit';
 import {useEffect, useState} from 'react';
 import {Socket, io} from 'socket.io-client';
@@ -19,7 +23,31 @@ function AHome() {
   const [image, setImages] = useState<any>('');
   const [message, setMessage] = useState<number>(0);
   const [photography, setPhotography] = useState<boolean>(false);
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [invalidUser, setInvalidUser] = useState(false);
+  const handleLogin = () => {
+    console.log(
+      'Logging in with username:',
+      username,
+      'and password:',
+      password,
+    );
+    setModalVisible(true);
+  };
+  const createAccountVerify = () => {
+    if (username === 'admin' && password === 'admin') {
+      setInvalidUser(true);
+      setModalVisible(false);
+      navigator.navigate('CreateUser');
+    } else {
+      setInvalidUser(true);
+    }
+  };
+  useEffect(() => {
+    setInvalidUser(false);
+  }, [username, password]);
   return (
     <View
       style={{
@@ -294,8 +322,72 @@ function AHome() {
             />
             <Text style={styles.text}>Std Reg</Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.box}
+            onPress={() => {
+              setUsername('');
+              setPassword('');
+              setModalVisible(true);
+            }}>
+            <Image
+              source={require('../assets/list.png')}
+              style={{
+                width: 50,
+                height: 50,
+                top: -10,
+              }}
+            />
+            <Text style={styles.text}>Create User</Text>
+          </TouchableOpacity>
         </View>
         <View style={{height: 30}}></View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Please verify your identity</Text>
+              <Text style={styles.modalDescription}>
+                For access to the admin panel, please verify your identity.
+              </Text>
+
+              <TextInput
+                style={[styles.input]}
+                placeholder="Username"
+                value={username}
+                onChangeText={setUsername}
+              />
+              {invalidUser && (
+                <Text style={styles.errorText}>Invalid username</Text>
+              )}
+              <TextInput
+                style={[styles.input, {marginTop: 10}]}
+                placeholder="Password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={true}
+              />
+
+              <View style={[styles.buttonContainer, {marginTop: 10}]}>
+                <TouchableOpacity
+                  style={[styles.button, styles.buttonContinue]}
+                  onPress={createAccountVerify}>
+                  <Text style={styles.textStyle}>Continue</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.button, styles.buttonCancel]}
+                  onPress={() => setModalVisible(false)}>
+                  <Text style={styles.textStyle}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     </View>
   );
@@ -333,11 +425,88 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  errorText: {
+    width: '100%',
+    marginBottom: 5,
+    color: 'red',
+    fontSize: 12,
+    textAlign: 'left',
+  },
   text: {
     fontSize: 14,
     fontWeight: '400',
     color: 'gray',
     position: 'absolute',
     bottom: 10,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    width: 300,
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000000', // Dark blue color for heading
+  },
+  modalDescription: {
+    marginBottom: 20,
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#666',
+  },
+  input: {
+    width: '100%',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    width: '45%',
+    alignItems: 'center',
+  },
+  buttonContinue: {
+    backgroundColor: '#0077d9',
+  },
+  buttonCancel: {
+    backgroundColor: '#5e5e5e',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
