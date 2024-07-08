@@ -16,7 +16,7 @@ export const counterSlice = createSlice({
     name: 'counter',
     initialState,
     reducers: {
-        setUsername: (state, action: PayloadAction<string>) => {
+        setUsername: (state, action: PayloadAction<any>) => {
             state.username = action.payload;
         },
         setData: (state, action: PayloadAction<any>) => {
